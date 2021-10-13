@@ -35,6 +35,10 @@
     ```linux
   conda install -c conda-forge openbabel
   ```
+ * rdkit
+   ```linux
+   conda install -c rdkit rdkit
+   ```
 
 ## 결과물
 #### 첨부파일 : plip env 가상환경
