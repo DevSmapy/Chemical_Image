@@ -30,6 +30,7 @@ Chemical의 다양한 "포맷"에 대해서 시각화를 하는 방법이 다양
 * pymol
     ```linux
   conda install -c shrodinger pymol
+  conda install -c conda-forge pymol-open-source
     ```
 * openbabel
     ```linux
