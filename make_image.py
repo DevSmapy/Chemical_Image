@@ -6,8 +6,14 @@ class temp_class:
     def __init__(self,inf):
         self._inf = inf
     def pmol(self):
+        # Make Mol by using pybel
         try:
             mol = pybel.readstring("smi",self._inf)
+        except:
+            pass
+
+        try:
+            mol = list(pybel.readfile("pdb",self._inf))[0]
         except:
             return 0
         return mol
@@ -87,6 +93,6 @@ class temp_class:
 # Code Test #
 #############
 if __name__ == "__main__":
-    smi = "C3c5cc(Oc1nc2ccccc2(cc1))ccc5(OCC3Cc4cnccc4)"
+    smi = "./example/4pk5A_PKJ_STB_C010_1-052.pdb" #"C3c5cc(Oc1nc2ccccc2(cc1))ccc5(OCC3Cc4cnccc4)"
     pp = temp_class(smi)
     pp.pmol_img_file2("test","")
