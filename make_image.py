@@ -2,27 +2,38 @@ from rdkit.Chem import Draw
 from rdkit import Chem
 import matplotlib.pyplot as plt
 import pybel
-class temp_class:
+class molto2D:
     def __init__(self,inf):
         self._inf = inf
     def pmol(self):
         # Make Mol by using pybel
+
+        # 1. Check SMILES
         try:
             mol = pybel.readstring("smi",self._inf)
         except:
             pass
-
+        # 2. Check PDB
         try:
-            mol = list(pybel.readfile("pdb",self._inf))[0]
+            mol = pybel.readstring("smi",list(pybel.readfile("pdb",self._inf))[0].write("can").split()[0])
         except:
             return 0
         return mol
     def rmol(self):
+        # Make Mol by RD-kit
+
+        # 1. Check SMILES
         try:
             mol = Chem.MolFromSmiles(self._inf)
         except:
+            pass
+        # 2. Check PDB
+        try:
+            mol = Chem.MolFromSmiles(Chem.MolToSmiles(Chem.MolFromPDBFile(self._inf)))
+        except:
             return 0
         return mol
+
     ###########################
     # Make Image using RD-kit #
     ###########################
@@ -50,20 +61,18 @@ class temp_class:
             pass
         #plt.show()
         # save image
-        plt.savefig(fPath + fname + ".png",dpi=100)
-        print("It is Finished to make %s/%s.png"%(fPath,fname))
+        plt.savefig(fPath +"/" +  fname + ".png",dpi=100)
     ##########################
     # Make Image using Babel #
     ##########################
     def pmol_img_file1(self,fname,fPath):
         mol = self.pmol()
         try:
-            mol.draw(show=False,filename=fPath + fname + ".raw.png")
+            mol.draw(show=False,filename=fPath + "/" + fname + ".raw.png")
         except:
             return 0
-        print("It is Finished to make %s/%s.raw.png"%(fPath,fname))
         try:
-            img = plt.imread(fPath + fname + ".raw.png")
+            img = plt.imread(fPath + "/" + fname + ".raw.png")
         except:
             return 0
         return img
@@ -84,15 +93,12 @@ class temp_class:
             pass
         #plt.show()
         # save image
-        plt.savefig(fPath + fname + ".png",dpi=100)
-        print("It is Finished to make %s%s.png"%(fPath,fname))
-
-
-
+        plt.savefig(fPath + "/" + fname + ".png",dpi=100)
 #############
 # Code Test #
 #############
 if __name__ == "__main__":
-    smi = "./example/4pk5A_PKJ_STB_C010_1-052.pdb" #"C3c5cc(Oc1nc2ccccc2(cc1))ccc5(OCC3Cc4cnccc4)"
-    pp = temp_class(smi)
-    pp.pmol_img_file2("test","")
+    smi = "./example/example_chemical.pdb" #"C3c5cc(Oc1nc2ccccc2(cc1))ccc5(OCC3Cc4cnccc4)"
+    pp = molto2D(smi)
+    pp.rmol_img_file("rmol_test","./outputs")
+    pp.pmol_img_file2("pmol_test","./outputs")
