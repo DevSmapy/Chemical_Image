@@ -8,29 +8,45 @@ class molto2D:
     def pmol(self):
         # Make Mol by using pybel
 
-        # 1. Check SMILES
+        # 1. Check SMILES #
         try:
             mol = pybel.readstring("smi",self._inf)
         except:
+            print("It is not SMILES string")
             pass
-        # 2. Check PDB
+        # 2. Check PDB #
         try:
             mol = pybel.readstring("smi",list(pybel.readfile("pdb",self._inf))[0].write("can").split()[0])
         except:
+            print("It is not PDB file")
+            pass
+        # 3. Check SDF #
+        try:
+            mol = pybel.readstring("smi",list(pybel.readfile("sdf",self._inf))[0].write("can").split()[0])
+        except:
+            print("It is not SDF file")
             return 0
         return mol
     def rmol(self):
         # Make Mol by RD-kit
 
-        # 1. Check SMILES
+        # 1. Check SMILES #
         try:
             mol = Chem.MolFromSmiles(self._inf)
         except:
+            print("It is not SMILES string")
             pass
-        # 2. Check PDB
+        # 2. Check PDB #
         try:
             mol = Chem.MolFromSmiles(Chem.MolToSmiles(Chem.MolFromPDBFile(self._inf)))
         except:
+            print("It is not PDB file")
+            pass
+        # 3. Check SDF #
+        try:
+            mol = Chem.MolFromSmiles(Chem.MolToSmiles(next(Chem.SDMolSupplier(self._inf))))
+        except:
+            print("It is not SDF file")
             return 0
         return mol
 
@@ -46,12 +62,12 @@ class molto2D:
         return img
     def rmol_img_file(self,fname,fPath):
         img = self.rmol_img_mem()
-        # customizing figure
+        # customizing figure #
         plt.figure(figsize=(5,5))
         plt.imshow(img)
         plt.tight_layout()
         plt.axis("off")
-        # notation
+        # notation #
         plt.text(0,700,"* %s"%fname.strip(),fontsize=12.0,fontstyle="oblique")
         plt.text(0,750,"%s"%self._inf.strip(),fontsize=10.0)
 
@@ -60,7 +76,7 @@ class molto2D:
         else:
             pass
         #plt.show()
-        # save image
+        # save image #
         plt.savefig(fPath +"/" +  fname + ".png",dpi=100)
     ##########################
     # Make Image using Babel #
@@ -98,7 +114,6 @@ class molto2D:
 # Code Test #
 #############
 if __name__ == "__main__":
-    smi = "./example/example_chemical.pdb" #"C3c5cc(Oc1nc2ccccc2(cc1))ccc5(OCC3Cc4cnccc4)"
+    smi = "./example/example_chemical.sdf" #"C3c5cc(Oc1nc2ccccc2(cc1))ccc5(OCC3Cc4cnccc4)"
     pp = molto2D(smi)
-    pp.rmol_img_file("rmol_test","./outputs")
-    pp.pmol_img_file2("pmol_test","./outputs")
+    pp.rmol_img_file("rmol_sdf","./outputs")
