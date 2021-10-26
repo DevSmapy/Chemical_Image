@@ -7,49 +7,66 @@ class molto2D:
         self._inf = inf
     def pmol(self):
         # Make Mol by using pybel
-
+        mol = None
         # 1. Check SMILES #
         try:
             mol = pybel.readstring("smi",self._inf)
         except:
-            print("It is not SMILES string")
             pass
         # 2. Check PDB #
-        try:
-            mol = pybel.readstring("smi",list(pybel.readfile("pdb",self._inf))[0].write("can").split()[0])
-        except:
-            print("It is not PDB file")
-            pass
-        # 3. Check SDF #
-        try:
-            mol = pybel.readstring("smi",list(pybel.readfile("sdf",self._inf))[0].write("can").split()[0])
-        except:
-            print("It is not SDF file")
-            return 0
-        return mol
+        if mol is None:
+            try:
+                mol = pybel.readstring("smi",list(pybel.readfile("pdb",self._inf))[0].write("can").split()[0])
+            except:
+                pass
+            if mol is None:
+                # 3. Check SDF #
+                try:
+                    mol = pybel.readstring("smi",list(pybel.readfile("sdf",self._inf))[0].write("can").split()[0])
+                except:
+                    pass
+                if mol is None:
+                    return 0
+                else:
+                    print("It is SDF")
+                    return mol
+            else:
+                print("It is PDB")
+                return mol
+        else:
+            print("It is SMILES")
+            return mol
     def rmol(self):
         # Make Mol by RD-kit
-
+        mol = None
         # 1. Check SMILES #
         try:
             mol = Chem.MolFromSmiles(self._inf)
         except:
-            print("It is not SMILES string")
             pass
-        # 2. Check PDB #
-        try:
-            mol = Chem.MolFromSmiles(Chem.MolToSmiles(Chem.MolFromPDBFile(self._inf)))
-        except:
-            print("It is not PDB file")
-            pass
-        # 3. Check SDF #
-        try:
-            mol = Chem.MolFromSmiles(Chem.MolToSmiles(next(Chem.SDMolSupplier(self._inf))))
-        except:
-            print("It is not SDF file")
-            return 0
-        return mol
-
+        if mol is None:
+            # 2. Check PDB #
+            try:
+                mol = Chem.MolFromSmiles(Chem.MolToSmiles(Chem.MolFromPDBFile(self._inf)))
+            except:
+                pass
+            if mol is None:
+                # 3. Check SDF #
+                try:
+                    mol = Chem.MolFromSmiles(Chem.MolToSmiles(next(Chem.SDMolSupplier(self._inf))))
+                except:
+                    pass
+                if mol is None:
+                    return 0
+                else:
+                    print("It is SDF")
+                    return mol
+            else:
+                print("It is PDB")
+                return mol
+        else:
+            print("It is SMILES")
+            return mol
     ###########################
     # Make Image using RD-kit #
     ###########################
@@ -114,6 +131,6 @@ class molto2D:
 # Code Test #
 #############
 if __name__ == "__main__":
-    smi = "./example/example_chemical.sdf" #"C3c5cc(Oc1nc2ccccc2(cc1))ccc5(OCC3Cc4cnccc4)"
+    smi = "./example/example_chemical.pdb" #"C3c5cc(Oc1nc2ccccc2(cc1))ccc5(OCC3Cc4cnccc4)"
     pp = molto2D(smi)
-    pp.rmol_img_file("rmol_sdf","./outputs")
+    pp.rmol_img_file("rmol_pdb","./outputs")
