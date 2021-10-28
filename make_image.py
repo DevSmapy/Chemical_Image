@@ -2,6 +2,8 @@ from rdkit.Chem import Draw
 from rdkit import Chem
 import matplotlib.pyplot as plt
 import pybel
+import pymol
+import os
 class molto2D:
     def __init__(self,inf):
         self._inf = inf
@@ -10,7 +12,7 @@ class molto2D:
         mol = None
         # 1. Check SMILES #
         try:
-            mol = pybel.readstring("smi",self._inf)
+            mol = list(pybel.readfile("smi",self._inf))[0]
         except:
             pass
         # 2. Check PDB #
@@ -26,15 +28,23 @@ class molto2D:
                 except:
                     pass
                 if mol is None:
-                    return 0
+                    try:
+                        mol = pybel.readstring("smi",self._inf)
+                    except:
+                        pass
+                    if mol is None:
+                        return 0
+                    else:
+                        print("It is SMILES String")
+                        return mol
                 else:
-                    print("It is SDF")
+                    print("It is SDF File")
                     return mol
             else:
-                print("It is PDB")
+                print("It is PDB File")
                 return mol
         else:
-            print("It is SMILES")
+            print("It is SMILES File")
             return mol
     def rmol(self):
         # Make Mol by RD-kit
@@ -57,15 +67,26 @@ class molto2D:
                 except:
                     pass
                 if mol is None:
-                    return 0
+                    try:
+                        with open(self._inf,"r") as F:
+                            for line in F.readlines():
+                                tline = line.strip()
+                        mol = Chem.MolFromSmiles(tline)
+                    except:
+                        pass
+                    if mol is None:
+                        return 0
+                    else:
+                        print("It is SMILES File")
+                        return mol
                 else:
-                    print("It is SDF")
+                    print("It is SDF File")
                     return mol
             else:
-                print("It is PDB")
+                print("It is PDB File")
                 return mol
         else:
-            print("It is SMILES")
+            print("It is SMILES String")
             return mol
     ###########################
     # Make Image using RD-kit #
@@ -127,10 +148,52 @@ class molto2D:
         #plt.show()
         # save image
         plt.savefig(fPath + "/" + fname + ".png",dpi=100)
+
+class molto3D:
+    def __init__(self,inf):
+        self._inf = inf
+        pymol.cmd.bg_color("white")
+        pymol.cmd.set("label_size",10)
+        pymol.cmd.set("label_font_id",5)
+        pymol.cmd.set("depth_cue",0)
+    def load_chemical(self,fn,fPath):
+        t = 1
+        try:
+            pymol.cmd.load(self._inf,"infile")
+            t =1
+        except:
+            t = 0
+        if t == 0:
+            try:
+                os.system("obabel -ismi %s -O %s/%s.sdf --gen3d"%(self._inf,fPath,fn))
+            except:
+                print("Error : Generate SMILES to 3D SDF")
+                return t
+            try:
+                pymol.cmd.load(fPath + '/' + fn + ".sdf","infile")
+                t = 1
+            except:
+                t = 0
+        else:
+            return t
+        return t
+    def stick_img(self,fname,fPath):
+        re = self.load_chemical(fname,fPath)
+        if re == 0:
+            return
+        else:
+            pass
+        pymol.cmd.show("stick")
+        pymol.cmd.color("atomic")
+        pymol.cmd.png(fPath + "/" + fname + ".png")
+        pymol.cmd.save(fPath + "/" + fname + ".pse")
+
+
+
 #############
 # Code Test #
 #############
 if __name__ == "__main__":
-    smi = "./example/example_chemical.pdb" #"C3c5cc(Oc1nc2ccccc2(cc1))ccc5(OCC3Cc4cnccc4)"
-    pp = molto2D(smi)
-    pp.rmol_img_file("rmol_pdb","./outputs")
+    smi = "./example/example_chemical.txt" #"C3c5cc(Oc1nc2ccccc2(cc1))ccc5(OCC3Cc4cnccc4)"
+    pp = molto3D(smi)
+    pp.stick_img("test_sdf","./outputs")
