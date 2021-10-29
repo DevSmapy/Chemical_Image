@@ -156,6 +156,7 @@ class molto3D:
         pymol.cmd.set("label_size",10)
         pymol.cmd.set("label_font_id",5)
         pymol.cmd.set("depth_cue",0)
+        pymol.cmd.color("atomic")
     def load_chemical(self,fn,fPath):
         t = 1
         try:
@@ -184,9 +185,22 @@ class molto3D:
         else:
             pass
         pymol.cmd.show("stick")
-        pymol.cmd.color("atomic")
+
         pymol.cmd.png(fPath + "/" + fname + ".png")
         pymol.cmd.save(fPath + "/" + fname + ".pse")
+    def around_img(self,chain1,chain2,fname,fPath):
+        re = self.load_chemical(fname,fPath)
+        if re == 0:
+            return
+        else:
+            pass
+        pymol.cmd.select("chain %s within 5.0 of chain %s"%(chain1,chain2))
+        pymol.cmd.show("surface","sele")
+        pymol.cmd.set("transparency",0.3,"sele")
+        pymol.cmd.show("stick","chain %s"%chain2)
+
+        pymol.cmd.png(fPath + "/" + fname + ".surface.png")
+        pymol.cmd.save(fPath + "/" + fname + ".surface.pse")
 
 
 
@@ -194,6 +208,7 @@ class molto3D:
 # Code Test #
 #############
 if __name__ == "__main__":
-    smi = "./example/example_chemical.txt" #"C3c5cc(Oc1nc2ccccc2(cc1))ccc5(OCC3Cc4cnccc4)"
+    #smi = "./example/example_chemical.txt" #"C3c5cc(Oc1nc2ccccc2(cc1))ccc5(OCC3Cc4cnccc4)"
+    smi = "./Data/"
     pp = molto3D(smi)
-    pp.stick_img("test_sdf","./outputs")
+    pp.around_img("A","X","test_surface","./outputs")
