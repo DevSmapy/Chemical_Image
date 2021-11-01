@@ -47,4 +47,7 @@ Chemical의 "다양한 포맷"에 대해서 시각화를 하는 방법이 다양
 ![](./bins/images/from_pybel_image.png)   
 *pybel을 사용한 최종 결과물*   
 ![](./bins/images/from_rdkit_image.png)   
-*rdkit을 사용한 최종 결과물*
+*rdkit을 사용한 최종 결과물*    
+![](./bins/images/test_surface.annot.png)   
+*pymol을 사용한 surface 이미지*   
+
