@@ -50,4 +50,6 @@ Chemical의 "다양한 포맷"에 대해서 시각화를 하는 방법이 다양
 *rdkit을 사용한 최종 결과물*    
 ![](./bins/images/test_surface.annot.png)   
 *pymol을 사용한 surface 이미지*   
+![](./bins/images/001_test.tiled.png)   
+*결과물 들을 tiling한 이미지*   
 

@@ -51,19 +51,19 @@ class molto2D: # several chemical format to 2D
         mol = None
         # 1. Check SMILES #
         try:
-            mol = Chem.MolFromSmiles(self._inf)
+            mol = Chem.MolFromSmiles(self._inf,sanitize=False)
         except:
             pass
         if mol is None:
             # 2. Check PDB #
             try:
-                mol = Chem.MolFromSmiles(Chem.MolToSmiles(Chem.MolFromPDBFile(self._inf)))
+                mol = Chem.MolFromSmiles(Chem.MolToSmiles(Chem.MolFromPDBFile(self._inf),sanitize=False),sanitize=False)
             except:
                 pass
             if mol is None:
                 # 3. Check SDF #
                 try:
-                    mol = Chem.MolFromSmiles(Chem.MolToSmiles(next(Chem.SDMolSupplier(self._inf))))
+                    mol = Chem.MolFromSmiles(Chem.MolToSmiles(next(Chem.SDMolSupplier(self._inf)),sanitize=False),sanitize=False)
                 except:
                     pass
                 if mol is None:
@@ -71,7 +71,7 @@ class molto2D: # several chemical format to 2D
                         with open(self._inf,"r") as F:
                             for line in F.readlines():
                                 tline = line.strip()
-                        mol = Chem.MolFromSmiles(tline)
+                        mol = Chem.MolFromSmiles(tline,sanitize=False)
                     except:
                         pass
                     if mol is None:
@@ -204,6 +204,19 @@ class molto3D: # several chemical format to 3D image
 
         pymol.cmd.png(fPath + "/" + fname + ".surface.png")
         pymol.cmd.save(fPath + "/" + fname + ".surface.pse")
+    def All_cartoon_img(self,fname,fPath):
+        re = self.load_chemical(fname,fPath)
+        if re == 0:
+            return
+        else:
+            pass
+        pymol.cmd.show("cartoon")
+        pymol.cmd.color("atomic")
+
+        pymol.cmd.orient("visible")
+
+        pymol.cmd.png(fPath + "/" + fname + ".A_cartoon.png")
+        pymol.cmd.save(fPath + "/" + fname + ".A_cartoon.pse")
     def annotation(self,annot,fname,fPath):
         fn = fname.split(".")[0]
         if fPath is None or fPath == "":
