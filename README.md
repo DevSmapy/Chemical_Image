@@ -41,8 +41,8 @@ Chemical의 "다양한 포맷"에 대해서 시각화를 하는 방법이 다양
    conda install -c rdkit rdkit
    ```
 
-## 결과물
-![](./bins/images/from_pybel_image.raw.png)   
+## 결과물   
+![](./bins/images/from_pybel_image.raw.png){:width="40%" height="30%"}   
 *pybel을 사용한 결과물들 중 첫번째*   
 ![](./bins/images/from_pybel_image.png)   
 *pybel을 사용한 최종 결과물*   
