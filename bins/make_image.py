@@ -148,6 +148,10 @@ class molto2D: # several chemical format to 2D
         #plt.show()
         # save image
         plt.savefig(fPath + "/" + fname + ".png",dpi=100)
+
+##################
+# Chemical to 3D #
+##################
 class molto3D: # several chemical format to 3D image
     def __init__(self,inf):
         self._inf = inf
